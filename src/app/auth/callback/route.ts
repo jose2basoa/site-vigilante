@@ -1,14 +1,12 @@
-import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { supabase } from '../../../lib/supabase'
 
-export async function GET(request: Request) {
-  const requestUrl = new URL(request.url)
-  const code = requestUrl.searchParams.get('code')
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const code = req.query.code as string | undefined
 
   if (code) {
     await supabase.auth.exchangeCodeForSession(code)
   }
 
-  // Redirecionar para o dashboard após login OAuth
-  return NextResponse.redirect(new URL('/dashboard', requestUrl.origin))
+  return res.redirect('/dashboard') // ou onde quiser
 }
